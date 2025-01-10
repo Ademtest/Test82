@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vremenske Prilike</title>
+    <style>
+    	body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.weather-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.city input {
+    width: 70%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.city button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.weather-info {
+    margin-top: 20px;
+}
+
+.weather-info h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.weather-info p {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <h1>Vremenske Prilike</h1>
+        <div class="city">
+            <input type="text" id="city" placeholder="Unesite grad">
+            <button onclick="getWeather()">Pogledaj</button>
+        </div>
+        <div id="weather-info" class="weather-info">
+            <!-- Informacije o vremenu će biti prikazane ovde -->
+        </div>
+    </div>
+    <script>
+    	const apiKey = '0183b83a30f94c9b89d3233983513813'; // Zameniti sa tvojim API ključem
+
+function getWeather() {
+    const city = document.getElementById('city').value;
+    if (!city) {
+        alert("Molimo vas unesite grad!");
+        return;
+    }
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=bs`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.cod === 200) {
+                const weatherData = `
+                    <h2>${data.name}, ${data.sys.country}</h2>
+                    <p>Temperatura: ${data.main.temp}°C</p>
+                    <p>Vjetar: ${data.wind.speed} m/s</p>
+                    <p>Opis: ${data.weather[0].description}</p>
+                `;
+                document.getElementById('weather-info').innerHTML = weatherData;
+            } else {
+                document.getElementById('weather-info').innerHTML = `<p>Grad nije pronađen!</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Greška pri dohvaćanju podataka:', error);
+            alert('Došlo je do greške. Pokušajte ponovo kasnije.');
+        });
+}
+
+    </script>
+</body>
+</html>
